@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fuse Social — One Club. Never The Same.</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Archivo+Expanded:wght@600;700&display=swap');
+
+  :root{
+    --bg: #0a0a0a;
+    --bg-raised: #141414;
+    --bg-card: #1a1a1a;
+    --ink: #f5f0e8;
+    --ink-dim: #a89e90;
+    --orange: #ff6b35;
+    --pink: #ff2d78;
+    --purple: #a020f0;
+    --line: rgba(245,240,232,0.1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Archivo', sans-serif;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--pink);color:var(--bg);}
+
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:50; opacity:0.045; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  /* NAV */
+  nav{
+    position:fixed; top:0; left:0; right:0; z-index:40;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px clamp(20px,5vw,64px);
+    backdrop-filter:blur(10px);
+    background:rgba(10,10,10,0.5);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-mark{
+    font-family:'Anton', sans-serif;
+    font-size:22px; letter-spacing:0.5px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .nav-mark .dot{
+    width:10px;height:10px;border-radius:50%;
+    background:conic-gradient(from 180deg, var(--orange), var(--pink), var(--purple), var(--orange));
+  }
+  .nav-links{display:flex; gap:36px; font-size:14px; font-weight:600; letter-spacing:0.3px;}
+  .nav-links a{opacity:0.75; transition:opacity .2s;}
+  .nav-links a:hover{opacity:1;}
+  .nav-cta{
+    font-size:13px; font-weight:700; padding:10px 20px; border-radius:100px;
+    background:var(--ink); color:var(--bg); letter-spacing:0.3px;
+  }
+  @media(max-width:720px){ .nav-links{display:none;} }
+
+  /* HERO */
+  .hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    position:relative; text-align:center; padding:120px 24px 80px;
+    isolation:isolate;
+  }
+  .ring{
+    position:absolute;
+    width:min(78vw, 620px); aspect-ratio:1;
+    border-radius:50%;
+    z-index:-1;
+    background:conic-gradient(from 0deg, var(--orange), var(--pink), var(--purple), var(--orange));
+    filter:blur(70px);
+    opacity:0.35;
+    animation:spin 16s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .hero-eyebrow{
+    font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+    color:var(--ink-dim); margin-bottom:24px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-eyebrow::before{
+    content:''; width:6px; height:6px; border-radius:50%; background:var(--pink);
+  }
+
+  .hero h1{
+    font-family:'Anton', sans-serif;
+    font-weight:400;
+    font-size:clamp(48px, 11vw, 128px);
+    line-height:0.92;
+    letter-spacing:-1px;
+    text-transform:uppercase;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(100deg, var(--orange), var(--pink) 50%, var(--purple));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+
+  .hero p{
+    margin-top:28px; max-width:520px;
+    font-size:clamp(15px,2vw,18px); color:var(--ink-dim); line-height:1.6;
+    font-weight:500;
+  }
+
+  .hero-actions{
+    margin-top:44px; display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+  }
+  .btn{
+    padding:16px 32px; border-radius:100px; font-weight:700; font-size:15px;
+    letter-spacing:0.2px; transition:transform .25s ease, box-shadow .25s ease;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn-primary{
+    background:linear-gradient(100deg, var(--orange), var(--pink));
+    color:#0a0a0a;
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 12px 32px -8px rgba(255,45,120,0.5); }
+  .btn-ghost{
+    border:1px solid var(--line); color:var(--ink);
+  }
+  .btn-ghost:hover{ border-color:rgba(245,240,232,0.4); transform:translateY(-2px); }
+
+  .scroll-cue{
+    position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+    font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--ink-dim);
+    display:flex; flex-direction:column; align-items:center; gap:10px;
+  }
+  .scroll-cue::after{
+    content:''; width:1px; height:36px; background:linear-gradient(var(--ink-dim), transparent);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:0.3;} 50%{opacity:1;} }
+
+  /* MARQUEE */
+  .marquee-wrap{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    overflow:hidden; padding:18px 0; background:var(--bg-raised);
+  }
+  .marquee{
+    display:flex; gap:48px; white-space:nowrap;
+    font-family:'Anton', sans-serif; font-size:18px; text-transform:uppercase;
+    letter-spacing:1px; color:var(--ink-dim);
+    animation:scroll 22s linear infinite;
+    width:max-content;
+  }
+  .marquee span{display:flex; align-items:center; gap:48px;}
+  .marquee .accent{ color:var(--pink); }
+  @keyframes scroll{ from{transform:translateX(0);} to{transform:translateX(-50%);} }
+
+  /* ABOUT */
+  .section{ padding:120px clamp(24px,6vw,64px); max-width:1180px; margin:0 auto; }
+  .section-label{
+    font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase;
+    color:var(--pink); margin-bottom:18px;
+  }
+  .about-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; align-items:start;
+  }
+  @media(max-width:860px){ .about-grid{grid-template-columns:1fr; gap:40px;} }
+
+  .about-grid h2{
+    font-family:'Anton', sans-serif; font-weight:400; text-transform:uppercase;
+    font-size:clamp(32px,4.2vw,52px); line-height:1.05; letter-spacing:-0.5px;
+  }
+  .about-stats{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:40px;
+  }
+  .stat-num{
+    font-family:'Anton', sans-serif; font-size:38px;
+    background:linear-gradient(100deg, var(--orange), var(--pink));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .stat-label{ font-size:12px; color:var(--ink-dim); letter-spacing:0.5px; margin-top:4px; }
+
+  .about-body p{ color:var(--ink-dim); line-height:1.75; font-size:16px; }
+  .about-body p + p{ margin-top:18px; }
+
+  /* RETRO FEVER SECTION */
+  .event{
+    position:relative;
+    padding:140px clamp(24px,6vw,64px);
+    background:var(--bg-raised);
+    border-top:1px solid var(--line);
+    overflow:hidden;
+  }
+  .event::before{
+    content:'';
+    position:absolute; top:-20%; right:-10%; width:600px; height:600px;
+    background:radial-gradient(circle, rgba(255,45,120,0.18), transparent 70%);
+    pointer-events:none;
+  }
+  .event-inner{ max-width:1180px; margin:0 auto; position:relative; }
+
+  .event-header{ text-align:center; margin-bottom:64px; }
+  .event-tag{
+    display:inline-block; font-size:12px; font-weight:700; letter-spacing:3px;
+    text-transform:uppercase; color:var(--orange);
+    border:1px solid rgba(255,107,53,0.35); padding:8px 18px; border-radius:100px;
+    margin-bottom:28px;
+  }
+  .event-title{
+    font-family:'Anton', sans-serif; font-weight:400; text-transform:uppercase;
+    font-size:clamp(56px, 12vw, 140px); line-height:0.85; letter-spacing:-2px;
+  }
+  .event-title .outline{
+    -webkit-text-stroke:2px var(--ink); color:transparent;
+  }
+  .event-sub{
+    margin-top:20px; font-size:16px; color:var(--ink-dim); max-width:480px;
+    margin-left:auto; margin-right:auto; line-height:1.6;
+  }
+
+  .event-grid{
+    display:grid; grid-template-columns:1.1fr 0.9fr; gap:56px; align-items:center;
+    margin-top:80px;
+  }
+  @media(max-width:860px){ .event-grid{grid-template-columns:1fr;} }
+
+  .poster{
+    aspect-ratio:4/5; border-radius:18px;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,107,53,0.35), transparent 50%),
+      radial-gradient(circle at 70% 80%, rgba(160,32,240,0.4), transparent 50%),
+      linear-gradient(160deg, #1a1a1a, #0a0a0a);
+    border:1px solid var(--line);
+    position:relative;
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:36px; overflow:hidden;
+  }
+  .poster::after{
+    content:'';
+    position:absolute; inset:0; opacity:0.5; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .poster-top{ position:relative; z-index:1; }
+  .poster-top .num{ font-family:'Anton',sans-serif; font-size:13px; letter-spacing:2px; color:var(--ink-dim); }
+  .poster-mid{
+    position:relative; z-index:1;
+    font-family:'Anton', sans-serif; font-size:clamp(40px,6vw,64px);
+    line-height:0.85; text-transform:uppercase;
+  }
+  .poster-bottom{
+    position:relative; z-index:1;
+    display:flex; justify-content:space-between; align-items:flex-end;
+    font-size:12px; color:var(--ink-dim); letter-spacing:0.5px;
+  }
+  .poster-bottom strong{ color:var(--ink); display:block; font-size:14px; margin-bottom:2px;}
+
+  .event-details{ display:flex; flex-direction:column; gap:0; }
+  .detail-row{
+    display:flex; align-items:center; gap:18px;
+    padding:22px 0; border-bottom:1px solid var(--line);
+  }
+  .detail-row:first-child{ padding-top:0; }
+  .detail-icon{
+    width:42px; height:42px; border-radius:12px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--bg-card); border:1px solid var(--line);
+    font-size:18px;
+  }
+  .detail-text .label{ font-size:11px; text-transform:uppercase; letter-spacing:1.5px; color:var(--ink-dim); margin-bottom:4px; }
+  .detail-text .value{ font-size:17px; font-weight:600; }
+  .detail-text .value.placeholder{ color:var(--ink-dim); font-weight:500; font-style:italic; }
+
+  .event-cta{ margin-top:36px; display:flex; gap:14px; flex-wrap:wrap; }
+
+  .note{
+    margin-top:18px; font-size:12px; color:var(--ink-dim);
+    border-left:2px solid var(--pink); padding-left:12px; line-height:1.5;
+  }
+
+  /* GALLERY STRIP */
+  .gallery{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:2px;
+  }
+  @media(max-width:720px){ .gallery{grid-template-columns:repeat(2,1fr);} }
+  .gallery div{
+    aspect-ratio:1; position:relative; overflow:hidden;
+  }
+  .gallery div:nth-child(1){ background:linear-gradient(160deg,#2a1a3a,#0a0a0a); }
+  .gallery div:nth-child(2){ background:linear-gradient(160deg,#3a1a2a,#0a0a0a); }
+  .gallery div:nth-child(3){ background:linear-gradient(160deg,#1a2a3a,#0a0a0a); }
+  .gallery div:nth-child(4){ background:linear-gradient(160deg,#3a2a1a,#0a0a0a); }
+  .gallery div span{
+    position:absolute; bottom:16px; left:16px; font-size:11px; color:var(--ink-dim);
+    letter-spacing:1px; text-transform:uppercase;
+  }
+
+  /* FOOTER / RSVP */
+  footer{
+    padding:100px clamp(24px,6vw,64px) 48px;
+    text-align:center; border-top:1px solid var(--line);
+  }
+  footer h3{
+    font-family:'Anton', sans-serif; font-weight:400; text-transform:uppercase;
+    font-size:clamp(32px,5vw,56px); letter-spacing:-0.5px; line-height:1.05;
+    max-width:680px; margin:0 auto 32px;
+  }
+  .footer-meta{
+    margin-top:64px; display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px; font-size:13px; color:var(--ink-dim);
+    border-top:1px solid var(--line); padding-top:28px;
+  }
+  .footer-social{ display:flex; gap:20px; }
+  .footer-social a{ opacity:0.7; transition:opacity .2s; font-weight:600; }
+  .footer-social a:hover{ opacity:1; color:var(--pink); }
+
+  /* STAY IN THE LOOP FORM */
+  .loop-section{
+    padding:120px clamp(24px,6vw,64px);
+    border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .loop-section h2{
+    font-family:'Anton', sans-serif; font-weight:400; text-transform:uppercase;
+    font-size:clamp(36px,5.5vw,64px); letter-spacing:-0.5px; line-height:1.05;
+    max-width:680px; margin:0 auto 14px;
+  }
+  .loop-section .sub{
+    color:var(--ink-dim); font-size:16px; max-width:460px; margin:0 auto 48px;
+    line-height:1.6;
+  }
+  .loop-form{
+    display:grid; grid-template-columns:1fr 1fr 1fr auto;
+    gap:12px; max-width:860px; margin:0 auto;
+  }
+  @media(max-width:760px){
+    .loop-form{ grid-template-columns:1fr; }
+  }
+  .loop-form input{
+    background:var(--bg-card); border:1px solid var(--line);
+    color:var(--ink); font-family:'Archivo', sans-serif;
+    font-size:14px; padding:16px 20px; border-radius:100px;
+    outline:none; transition:border-color .2s;
+    width:100%;
+  }
+  .loop-form input::placeholder{ color:var(--ink-dim); }
+  .loop-form input:focus{ border-color:rgba(255,45,120,0.5); }
+  .loop-form .btn-submit{
+    background:linear-gradient(100deg, var(--orange), var(--pink));
+    color:#0a0a0a; font-weight:700; font-size:14px;
+    padding:16px 28px; border-radius:100px; border:none;
+    cursor:pointer; white-space:nowrap; font-family:'Archivo',sans-serif;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .loop-form .btn-submit:hover{
+    transform:translateY(-2px); box-shadow:0 12px 32px -8px rgba(255,45,120,0.5);
+  }
+  .form-success{
+    display:none; margin-top:20px;
+    font-size:14px; color:var(--pink); font-weight:600; letter-spacing:0.3px;
+  }
+  .ig-block{
+    margin-top:56px; padding-top:48px; border-top:1px solid var(--line);
+    display:flex; flex-direction:column; align-items:center; gap:16px;
+  }
+  .ig-block p{
+    font-size:14px; color:var(--ink-dim); max-width:360px; line-height:1.6;
+  }
+  .btn-ig{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:14px 28px; border-radius:100px;
+    background:linear-gradient(100deg, #f58529, #dd2a7b, #8134af, #515bd4);
+    color:#fff; font-weight:700; font-size:14px;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .btn-ig:hover{ transform:translateY(-2px); box-shadow:0 12px 32px -8px rgba(221,42,123,0.5); }
+  .btn-ig svg{ width:18px; height:18px; fill:#fff; flex-shrink:0; }
+
+  @media(prefers-reduced-motion: reduce){
+    .ring, .marquee, .scroll-cue::after{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<nav>
+  <div class="nav-mark"><span class="dot"></span>FUSE SOCIAL</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#retro-fever">Retro Fever</a>
+    <a href="#rsvp">RSVP</a>
+  </div>
+  <a href="#rsvp" class="nav-cta">Get In</a>
+</nav>
+
+<section class="hero">
+  <div class="ring"></div>
+  <div class="hero-eyebrow">Vizag's Community Floor</div>
+  <h1>One Club.<br>Never The <span class="grad">Same.</span></h1>
+  <p>Fuse Social is the antidote to routine — a rotating floor of music, people, and nights that don't repeat themselves.</p>
+  <div class="hero-actions">
+    <a href="#retro-fever" class="btn btn-primary">See Retro Fever →</a>
+    <a href="#rsvp" class="btn btn-ghost">RSVP Now</a>
+  </div>
+  <div class="scroll-cue">Scroll</div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>RETRO FEVER <span class="accent">●</span> ONE CLUB, NEVER THE SAME <span class="accent">●</span> VIZAG'S FLOOR <span class="accent">●</span> RETRO FEVER <span class="accent">●</span> ONE CLUB, NEVER THE SAME <span class="accent">●</span> VIZAG'S FLOOR <span class="accent">●</span></span>
+    <span>RETRO FEVER <span class="accent">●</span> ONE CLUB, NEVER THE SAME <span class="accent">●</span> VIZAG'S FLOOR <span class="accent">●</span> RETRO FEVER <span class="accent">●</span> ONE CLUB, NEVER THE SAME <span class="accent">●</span> VIZAG'S FLOOR <span class="accent">●</span></span>
+  </div>
+</div>
+
+<section class="section" id="about">
+  <div class="about-grid">
+    <div>
+      <div class="section-label">Who We Are</div>
+      <h2>A community built on never doing the same night twice.</h2>
+      <div class="about-stats">
+        <div>
+          <div class="stat-num">24</div>
+          <div class="stat-label">Drops &amp; Events</div>
+        </div>
+        <div>
+          <div class="stat-num">243+</div>
+          <div class="stat-label">In The Circle</div>
+        </div>
+        <div>
+          <div class="stat-num">02</div>
+          <div class="stat-label">Editions Live</div>
+        </div>
+      </div>
+    </div>
+    <div class="about-body">
+      <p>Fuse Social started as a question: what if a club night never repeated its own formula? Every drop is themed, every floor reset from scratch — new sound, new crowd energy, new reason to show up.</p>
+      <p>From unplugged jam sessions to full-blown themed takeovers, the throughline is the same — no filler, no fixed format, just whoever's in the room that night.</p>
+    </div>
+  </div>
+</section>
+
+<section class="event" id="retro-fever">
+  <div class="event-inner">
+    <div class="event-header">
+      <div class="event-tag">Edition 03 · Drop Incoming</div>
+      <div class="event-title">RETRO<br><span class="outline">FEVER</span></div>
+      <p class="event-sub">All hits, no filling, never lazy. A throwback floor built on the songs that made you who you are.</p>
+    </div>
+
+    <div class="event-grid">
+      <div class="poster">
+        <div class="poster-top"><span class="num">EDITION 03</span></div>
+        <div class="poster-mid">RETRO<br>FEVER</div>
+        <div class="poster-bottom">
+          <div>
+            <strong>Live Band</strong>
+            Open Floor · Vizag
+          </div>
+          <div style="text-align:right;">
+            <strong>₹650</strong>
+            Entry
+          </div>
+        </div>
+      </div>
+
+      <div class="event-details">
+        <div class="detail-row">
+          <div class="detail-icon">📅</div>
+          <div class="detail-text">
+            <div class="label">Date &amp; Time</div>
+            <div class="value placeholder">To be confirmed — dropping soon</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">📍</div>
+          <div class="detail-text">
+            <div class="label">Venue</div>
+            <div class="value placeholder">Vizag · location dropping soon</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">🎟️</div>
+          <div class="detail-text">
+            <div class="label">Entry</div>
+            <div class="value">₹650 onwards</div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-icon">🎶</div>
+          <div class="detail-text">
+            <div class="label">On The Floor</div>
+            <div class="value">Live band · open sing-alongs · retro classics</div>
+          </div>
+        </div>
+
+        <div class="event-cta">
+          <a href="#rsvp" class="btn btn-primary">Reserve Your Spot →</a>
+        </div>
+        <div class="note">Date, venue &amp; full lineup get swapped in here once confirmed — this section pulls from one place across the whole site.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="gallery">
+  <div><span>Just Watched</span></div>
+  <div><span>The Poster Drop</span></div>
+  <div><span>Do You Wanna Go?</span></div>
+  <div><span>After Hours</span></div>
+</div>
+
+<section class="loop-section" id="rsvp">
+  <div class="section-label" style="display:flex;justify-content:center;">Stay In The Loop</div>
+  <h2>First to know.<br>Every time we drop.</h2>
+  <p class="sub">Drop your details and we'll hit you when the next event goes live — no spam, just the drop.</p>
+
+  <div class="loop-form" id="loopForm">
+    <input type="text" id="fname" placeholder="Your name" required />
+    <input type="email" id="femail" placeholder="Email address" required />
+    <input type="tel" id="fphone" placeholder="WhatsApp number" required />
+    <button class="btn-submit" onclick="submitForm()">Notify Me →</button>
+  </div>
+  <div class="form-success" id="formSuccess">🔥 You're on the list. See you on the floor.</div>
+
+  <div class="ig-block">
+    <p>Follow us on Instagram — every new event drops there first as a post or reel.</p>
+    <a href="https://www.instagram.com/fuse_social" target="_blank" class="btn-ig">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Follow @fuse_social
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-meta" style="max-width:1180px;margin:0 auto;">
+    <div>© 2026 Fuse Social — Vizag</div>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/fuse_social" target="_blank">Instagram</a>
+      <a href="#">WhatsApp</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+function submitForm(){
+  const name = document.getElementById('fname').value.trim();
+  const email = document.getElementById('femail').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  if(!name || !email || !phone){ alert('Please fill in all fields!'); return; }
+  document.getElementById('loopForm').style.opacity = '0.4';
+  document.getElementById('loopForm').style.pointerEvents = 'none';
+  document.getElementById('formSuccess').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
